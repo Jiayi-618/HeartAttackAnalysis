@@ -1,0 +1,104 @@
+---
+title: "Heart Attack Analysis & Prediction"
+author: "Jiayi Zhang"
+date: "2024-10-05"
+output: html_document
+---
+```{r}
+# Set locale to English (United States)
+Sys.setlocale("LC_ALL", "English")
+```
+
+# Introduction
+
+### This project uses the **Heart Attack Analysis & Prediction Dataset** from Kaggle. The dataset contains 14 attributes related to heart health, including age, cholesterol levels, chest pain type, and maximum heart rate. The goal is to build a logistic regression model to predict the likelihood of a heart attack based on these factors.
+```{r}
+# Read the dataset from local directory
+heart_data <- read.csv("C:/Users/lenovo/Desktop/archive/heart.csv")
+library(dplyr)
+library(ggplot2)
+library(knitr)
+```
+# Summary Table
+```{r}
+# Group by the target variable (output) and calculate mean of key variables
+summary_stats <- heart_data %>%
+  group_by(output) %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE),
+    mean_cholesterol = mean(chol, na.rm = TRUE),
+    mean_rest_bp = mean(trtbps, na.rm = TRUE),
+    mean_max_hr = mean(thalachh, na.rm = TRUE)
+  )
+
+# Display the summary table
+knitr::kable(summary_stats, col.names = c("Heart Attack (0/1)", "Mean Age", "Mean Cholesterol", "Mean Resting BP", "Mean Max HR"))
+```
+### The table above provides summary statistics for key cardiovascular health indicators in the dataset. The mean age of patients is approximately `r round(summary_stats$mean_age, 2)` years, with a median of `r summary_stats$median_age`. Similarly, the mean cholesterol level is `r round(summary_stats$mean_cholesterol, 2)` mg/dL, while the median is `r summary_stats$median_cholesterol`. The resting blood pressure also shows consistent mean and median values.
+
+# Plots
+## Age Distribution by Heart Attack Status
+```{r}
+# Boxplot of Age by Heart Attack Status
+ggplot(heart_data, aes(x=factor(output), y=age, fill=factor(output))) +
+  geom_boxplot() +
+  labs(title="Age Distribution by Heart Attack Status", x="Heart Attack (0 = No, 1 = Yes)", y="Age") +
+  scale_fill_manual(values=c("green", "red"), labels=c("No Heart Attack", "Heart Attack")) +
+  theme_minimal()
+```
+
+### The boxplot above compares the age distribution between patients with (output = 1) and without (output = 0) a heart attack. It shows that patients who experienced a heart attack are generally older than those who did not. This suggests that age could be an important factor in determining heart attack risk.
+
+## Cholesterol Distribution by Heart Attack Status
+```{r}
+# Boxplot of Cholesterol by Heart Attack Status
+ggplot(heart_data, aes(x=factor(output), y=chol, fill=factor(output))) +
+  geom_boxplot() +
+  labs(title="Cholesterol Levels by Heart Attack Status", x="Heart Attack (0 = No, 1 = Yes)", y="Cholesterol (mg/dL)") +
+  scale_fill_manual(values=c("green", "red"), labels=c("No Heart Attack", "Heart Attack")) +
+  theme_minimal()
+```
+
+### This boxplot highlights the differences in cholesterol levels between the two groups. Patients who suffered a heart attack tend to have higher cholesterol levels, indicating that cholesterol could be a significant risk factor for heart attacks.
+
+## Resting Blood Pressure by Heart Attack Status
+```{r}
+# Boxplot of Resting Blood Pressure by Heart Attack Status
+ggplot(heart_data, aes(x=factor(output), y=trtbps, fill=factor(output))) +
+  geom_boxplot() +
+  labs(title="Resting Blood Pressure by Heart Attack Status", x="Heart Attack (0 = No, 1 = Yes)", y="Resting Blood Pressure (mm Hg)") +
+  scale_fill_manual(values=c("green", "red"), labels=c("No Heart Attack", "Heart Attack")) +
+  theme_minimal()
+```
+
+### The boxplot shows that while there is some overlap in resting blood pressure between the two groups, patients who had a heart attack generally had higher blood pressure. However, the difference is less pronounced compared to age and cholesterol.
+
+## Age vs Cholesterol, Colored by Heart Attack Status
+```{r}
+# Scatterplot of Age vs Cholesterol by Heart Attack Status
+ggplot(heart_data, aes(x=age, y=chol, color=factor(output))) +
+  geom_point(alpha=0.7) +
+  labs(title="Age vs Cholesterol by Heart Attack Status", x="Age", y="Cholesterol (mg/dL)") +
+  scale_color_manual(values=c("green", "red"), labels=c("No Heart Attack", "Heart Attack")) +
+  theme_minimal()
+```
+
+### This scatterplot shows the relationship between age and cholesterol, with points colored by heart attack status. It suggests that older patients with higher cholesterol are more likely to have experienced a heart attack (shown in red).
+
+## Age vs Resting Blood Pressure, Colored by Heart Attack Status
+```{r}
+# Scatterplot of Age vs Resting Blood Pressure by Heart Attack Status
+ggplot(heart_data, aes(x=age, y=trtbps, color=factor(output))) +
+  geom_point(alpha=0.7) +
+  labs(title="Age vs Resting Blood Pressure by Heart Attack Status", x="Age", y="Resting Blood Pressure (mm Hg)") +
+  scale_color_manual(values=c("green", "red"), labels=c("No Heart Attack", "Heart Attack")) +
+  theme_minimal()
+```
+
+### The scatterplot above shows the relationship between age and resting blood pressure. Although patients with a heart attack tend to have higher blood pressure, the data shows significant overlap between the two groups, suggesting that blood pressure alone might not be the strongest predictor.
+
+# conclusion: 
+
+### In this analysis, we explored the relationships between key cardiovascular variables and heart attack status. The findings indicate that age and cholesterol are strong predictors of heart attack risk, while resting blood pressure shows a less clear pattern.
+
+
