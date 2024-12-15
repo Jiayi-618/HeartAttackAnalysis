@@ -18,5 +18,12 @@ This project utilizes the Heart Attack Analysis & Prediction Dataset from Kaggle
 - **Table code**: The code for creating the required table is located in `scripts/summary_table.R`.
 - **Figure code**: The code for creating the required figure is located in `scripts/visualizations.R`.
 
-## Notes
-This repository includes data for analysis. If the data is too large or restricted due to privacy concerns, a fake or smaller sample dataset has been provided.
+## Build Docker Image
+
+To build the Docker image for this project, run the following command:
+
+docker build -t jiayizhang618/heartattackanalysis .
+
+To generate the report, run the following command:
+
+docker run -v "C:/Users/grezh/Desktop/HeartAttackAnalysis/data:/project/data" -v "C:/Users/grezh/Desktop/HeartAttackAnalysis/report:/project/report" jiayizhang618/heartattackanalysis
